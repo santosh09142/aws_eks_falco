@@ -20,7 +20,7 @@ resource "helm_release" "falco" {
   ]
 
   depends_on = [
-    aws_eks_cluster.eks_cluster
+    aws_eks_cluster.eks_cluster,
   ]
 
 }
@@ -44,6 +44,6 @@ resource "helm_release" "falco_custom_rules" {
   ]
 
   depends_on = [
-    aws_eks_cluster.eks_cluster
+    aws_eks_cluster.eks_cluster,
   ]
 }
