@@ -33,12 +33,8 @@ resource "helm_release" "falco_custom_rules" {
   wait             = false
   recreate_pods    = true
   timeout          = 600
-
+  upgrade_install  = true
   values = [
-    templatefile("${path.module}/falco-config/falco-custom-rules.yaml", {
-      # aws_region    = var.region
-    #   sqs_name      = module.sqs_sns_subscription.name
-      # irsa_role_arn = aws_iam_role.eks_cloudwatch_role.arn
-    })
+    file("${path.module}/falco-config/falco-custom-rules.yaml")
   ]
 }
