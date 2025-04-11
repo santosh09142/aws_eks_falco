@@ -45,8 +45,6 @@ resource "helm_release" "falco_custom_rules" {
   ]
 
   depends_on = [
-    aws_eks_cluster.eks_cluster,
-    terraform_data.kubectl_config,
-    helm_release.falco,
+    "terraform_data.kubectl_config",
   ]
 }
