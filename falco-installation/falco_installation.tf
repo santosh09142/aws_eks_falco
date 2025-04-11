@@ -18,12 +18,10 @@ resource "helm_release" "falco" {
       irsa_role_arn = aws_iam_role.eks_cloudwatch_role.arn
     })
   ]
-
-  depends_on = [
-    aws_eks_cluster.eks_cluster,
-    terraform_data.kubectl_config,
-  ]
-
+  # set {
+  #   name  = "falcosidekick.enabled"
+  #   value = "false"
+  # }
 }
 
 resource "helm_release" "falco_custom_rules" {
@@ -44,7 +42,4 @@ resource "helm_release" "falco_custom_rules" {
     file("${path.module}/falco-config/falco-custom-rules.yaml")
   ]
 
-  depends_on = [
-    terraform_data.kubectl_config,
-  ]
 }
