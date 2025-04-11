@@ -13,10 +13,10 @@ resource "helm_release" "falco" {
 
   values = [
     templatefile("${path.module}/falco-config/falco-values.yaml", {
-      aws_region    = data.terraform_remote_state.eks.outputs.region
+      aws_region    = data.terraform_remote_state.eks.outputs.eks_region
     #   sqs_name      = module.sqs_sns_subscription.name
       # irsa_role_arn = aws_iam_role.eks_cloudwatch_role.arn
-      irsa_role_arn = data.terraform_remote_state.eks.outputs.eks_irsa_role_arn
+      irsa_role_arn = aws_eks_cluster_auth.eks.cluster_auth_role_arn
     })
   ]
   # set {
