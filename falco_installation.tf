@@ -40,6 +40,5 @@ resource "helm_release" "falco_custom_rules" {
 
   depends_on = [
     aws_eks_cluster.eks_cluster
-    helm_release.falco
   ]
 }
