@@ -6,6 +6,6 @@ data "terraform_remote_state" "eks" {
     
 }
 
-resource "aws_eks_cluster_auth" "eks" {
-    cluster_name = data.terraform_remote_state.eks.outputs.eks_cluster_name
+data "aws_eks_cluster_auth" "eks_auth" {
+    name = data.terraform_remote_state.eks.outputs.eks_cluster_name
 }
