@@ -18,6 +18,11 @@ resource "helm_release" "falco" {
       irsa_role_arn = aws_iam_role.eks_cloudwatch_role.arn
     })
   ]
+
+  depends_on = [
+    aws_eks_cluster.eks_cluster
+  ]
+
 }
 
 resource "helm_release" "falco_custom_rules" {
