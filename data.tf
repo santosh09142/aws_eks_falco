@@ -29,6 +29,3 @@ data "aws_eks_cluster_auth" "cluster" {
 #   value = data.aws_subnets.all.ids
 # }
 
-output "test" {
-  value = aws_eks_cluster_auth.cluster.token
-}
