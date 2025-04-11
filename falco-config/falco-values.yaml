@@ -53,7 +53,7 @@ falco:
   rules_files:
     - /etc/falco/falco_rules.yaml
     - /etc/falco/falco_rules.local.yaml
-    - /etc/falco/rules.d/my_rules.yaml
+    - /etc/falco/rules.d/falco-custom-rules.yaml
     - /etc/falco/rules.d
 
   jsonOutput: true
