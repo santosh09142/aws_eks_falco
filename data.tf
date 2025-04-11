@@ -22,7 +22,7 @@ data "aws_subnets" "all" {
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = aws_eks_cluster.eks.name
+  name = aws_eks_cluster.eks_cluster.name
 }
 
 # output "vpc_id" {
