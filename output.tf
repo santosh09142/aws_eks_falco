@@ -42,3 +42,9 @@ output "eks_cluster_endpoint" {
   sensitive   = false
   description = "description"
 }
+
+output "eks_region" {
+  value       = aws_eks_cluster.eks_cluster.region
+  sensitive   = false
+  description = "description"
+}
