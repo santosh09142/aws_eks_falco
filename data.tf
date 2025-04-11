@@ -21,6 +21,14 @@ data "aws_subnets" "all" {
   }
 }
 
+data "aws_eks_cluster_auth" "cluster" {
+  name = aws_eks_cluster.eks.name
+}
+
 # output "vpc_id" {
 #   value = data.aws_subnets.all.ids
 # }
+
+output "test" {
+  value = aws_eks_cluster_auth.cluster.token
+}
