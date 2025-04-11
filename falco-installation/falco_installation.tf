@@ -4,7 +4,6 @@ resource "helm_release" "falco" {
   name             = "falco"
   repository       = "https://falcosecurity.github.io/charts"
   chart            = "falco"
-#   version          = "4.14.1"
   namespace        = "falco"
   create_namespace = true
   wait             = false
