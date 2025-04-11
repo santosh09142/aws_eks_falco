@@ -2,8 +2,8 @@ resource "helm_release" "falco" {
   # Uncomment the following line to use the KOPS cluster provider
   # provider = helm.kops_cluster
   name             = "falco"
-  repository       = "http://falcosecurity.github.io/charts"
-  chart            = "falcosecurity/falco"
+  repository       = "https://falcosecurity.github.io/charts"
+  chart            = "falco"
 #   version          = "4.14.1"
   namespace        = "falco"
   create_namespace = true
