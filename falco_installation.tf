@@ -37,4 +37,9 @@ resource "helm_release" "falco_custom_rules" {
   values = [
     file("${path.module}/falco-config/falco-custom-rules.yaml")
   ]
+
+  depends_on = [
+    aws_eks_cluster.eks_cluster
+    helm_release.falco
+  ]
 }
