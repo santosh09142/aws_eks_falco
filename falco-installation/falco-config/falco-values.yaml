@@ -1,0 +1,159 @@
+nodeSelector:
+  kubernetes.io/os: linux
+
+falcoctl:
+  indexes:
+  - name: falcosecurity
+    url: https://falcosecurity.github.io/falcoctl/index.yaml
+  artifact:
+    install:
+      # -- Enable the init container.
+      enabled: true
+    follow:
+      # -- Enable the sidecar container. We do not support it yet for plugins. It is used only for rules feed such as k8saudit-rules rules.
+      enabled: true
+  config:
+    artifact:
+      install:
+        # -- Do not resolve the depenencies for artifacts. By default is true, but for our use case we disable it.
+        resolveDeps: true
+        # -- List of artifacts to be installed by the falcoctl init container.
+        refs: 
+          - falco-rules:latest
+          - ghcr.io/santosh09142/falcorules/custom-rules:1.0.0
+      follow:
+        # -- List of artifacts to be followed by the falcoctl sidecar container.
+        refs:
+          - falco-rules:latest
+          - ghcr.io/santosh09142/falcorules/custom-rules:1.0.0
+
+falco:
+
+  tty: true
+
+  # Enable the driver, and choose between the kernel module or the ebpf probe.
+  # Default value: kernel module.
+  driver:
+    enabled: true
+    kind: modern_ebpf
+    modernEbpf:
+      bufSizePreset: 4
+
+  # grpc:
+  #     enabled: true
+
+  # Enable the collectors used to enrich the events with metadata.
+  # Check the values.yaml file for fine-grained options.
+  collectors:
+  enabled: true
+  # -- The containerd socket to use. The default is /run/containerd/containerd.sock.
+      # -- You can use a ConfigMap to provide your own configuration file.
+  socketPath: /run/containerd/containerd.sock
+  
+  rules_files:
+    - /etc/falco/falco_rules.yaml
+    - /etc/falco/falco_rules.local.yaml
+    - /etc/falco/rules.d/falco-custom-rules.yaml
+    - /etc/falco/rules.d
+
+  jsonOutput: true
+
+  podLabels:
+    app: falco
+  
+  json_include_output_property: true
+  json_include_tags_property: true
+  http_output:
+    enabled: true
+    url: "http://falco-falcosidekick:2801/"
+  
+    metrics:
+    enabled: true
+    interval: 15m
+    output_rule: true
+    resource_utilization_enabled: true
+    state_counters_enabled: true
+    kernel_event_counters_enabled: true
+    libbpf_stats_enabled: true
+    convert_memory_to_mb: true
+    include_empty_values: false
+  
+  # -- Parameters used
+  healthChecks:
+    livenessProbe:
+      # -- Tells the kubelet that it should wait X seconds before performing the first probe.
+      initialDelaySeconds: 30
+      # -- Number of seconds after which the probe times out.
+      timeoutSeconds: 10
+      # -- Specifies that the kubelet should perform the check every x seconds.
+      periodSeconds: 20
+    readinessProbe:
+      # -- Tells the kubelet that it should wait X seconds before performing the first probe.
+      initialDelaySeconds: 30
+      # -- Number of seconds after which the probe times out.
+      timeoutSeconds: 10
+      # -- Specifies that the kubelet should perform the check every x seconds.
+      periodSeconds: 20
+
+falcosidekick:
+  enabled: true
+
+  # Node selector: 
+  nodeSelector: 
+    kubernetes.io/os: linux
+  config:
+    debug: true
+    aws:
+      # IRSA - IAM Role for Service Account
+      useirsa: true
+      rolearn: ${irsa_role_arn}    # "arn:aws:iam::647495571141:role/eks-cluster-1-eks_cloudwatch_role" # Replace with your IAM role ARN
+      region: us-east-1
+      cloudwatchlogs:
+        enabled: true
+        # Set the log group and stream prefix
+        loggroup: "/eks/falco"
+        logstream: "eks-cluster-1"    # Cluster name
+        region: "us-east-1"
+        json: true
+        # Enable encryption for CloudWatch logs
+        # kmsKeyId: "alias/aws/cloudwatch" # Replace with your custom KMS key alias or ID
+        # Set log retention period (e.g., 30 days)
+        minimumpriority: "info"
+        retentionInDays: 30
+    
+  # Production-grade settings
+  resources:
+    limits:
+      cpu: 300m
+      memory: 512Mi
+    requests:
+      cpu: 150m
+      memory: 256Mi
+  tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: "app"
+                operator: "In"
+                values:
+                  - falcosidekick
+          topologyKey: "kubernetes.io/hostname"
+  # enable debugging
+  debug: true 
+
+  service:
+    enabled: true
+    type: ClusterIP
+    port: 2801
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb" # Use NLB for external access
+      service.beta.kubernetes.io/aws-load-balancer-internal: "true" # Internal NLB
+      service.beta.kubernetes.io/aws-load-balancer-scheme: "internal" # Internal NLB
+
