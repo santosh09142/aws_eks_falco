@@ -24,22 +24,22 @@ resource "helm_release" "falco" {
   # }
 }
 
-resource "helm_release" "falco_custom_rules" {
-  # Uncomment the following line to use the KOPS cluster provider
-  # provider = helm.kops_cluster
-  name             = "falco"
-  repository       = "https://falcosecurity.github.io/charts"
-  chart            = "falco"
-#   version          = "4.14.1"
-  namespace        = "falco"
-  create_namespace = true
-  reuse_values     = true
-  wait             = false
-  recreate_pods    = true
-  timeout          = 600
-  upgrade_install  = true
-  values = [
-    file("${path.module}/falco-config/falco-custom-rules.yaml")
-  ]
+# resource "helm_release" "falco_custom_rules" {
+#   # Uncomment the following line to use the KOPS cluster provider
+#   # provider = helm.kops_cluster
+#   name             = "falco"
+#   repository       = "https://falcosecurity.github.io/charts"
+#   chart            = "falco"
+# #   version          = "4.14.1"
+#   namespace        = "falco"
+#   create_namespace = false
+#   reuse_values     = true
+#   wait             = false
+#   recreate_pods    = true
+#   timeout          = 600
+#   upgrade_install  = true
+#   values = [
+#     file("${path.module}/falco-config/falco-custom-rules.yaml")
+#   ]
 
-}
+# }
