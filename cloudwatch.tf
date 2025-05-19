@@ -47,7 +47,7 @@ resource "aws_iam_role_policy" "eks_cloudwatch_policy"  {
           "logs:PutLogEvents"
         ]
         Effect   = "Allow"
-        Resource = "*"
+        Resource = "arn:aws:logs:*:*:log-group:/falco/events:*"   #"*"
       }
     ]
   })
