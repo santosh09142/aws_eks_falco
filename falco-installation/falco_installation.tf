@@ -26,7 +26,7 @@ resource "helm_release" "falco" {
       # irsa_role_arn = aws_iam_role.eks_cloudwatch_role.arn
       irsa_role_arn = data.terraform_remote_state.eks.outputs.eks_cloudwatch_role
     }),
-    local.falco_custom_rules
+    # local.falco_custom_rules
   ]
 
   reuse_values = true
@@ -35,6 +35,20 @@ resource "helm_release" "falco" {
   #   name  = "falcosidekick.enabled"
   #   value = "false"
   # }
+}
+
+resource "kubernetes_config_map" "falco_custom_rules" {
+  # Uncomment the following line to use the KOPS cluster provider
+  # provider = kubernetes.kops_cluster
+  metadata {
+    name      = "falco-custom-rules"
+    namespace = "falco"
+  }
+
+  data = {
+    "falco-custom-rules.yaml" = local.falco_custom_rules
+  }
+  
 }
 
 # resource "helm_release" "falco_custom_rules" {
