@@ -48,7 +48,9 @@ resource "kubernetes_config_map" "falco_custom_rules" {
   data = {
     "falco-custom-rules.yaml" = local.falco_custom_rules
   }
-  
+  depends_on = [
+    helm_release.falco
+  ] 
 }
 
 # resource "helm_release" "falco_custom_rules" {
