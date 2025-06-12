@@ -12,3 +12,9 @@ customRules:
       condition: evt.type = execve and container.id != host and proc.name = cat
       output: Cat command run inside container by %user.name (container=%container.id)
       priority: NOTICE
+    
+    - rule: Execution in Container Santosh
+      desc: Alert if 'cat' is executed in a container santosh.
+      condition: evt.type = execve and container.id != host and proc.name = cat
+      output: Cat command run inside container by %user.name (container=%container.id)
+      priority: NOTICE
