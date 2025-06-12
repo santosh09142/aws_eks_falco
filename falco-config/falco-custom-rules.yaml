@@ -6,3 +6,9 @@ customRules:
       output: Possible exploitation of IngressNightmare vulnerability by loading shared library %fd.name in %container.image.repository by %proc.name with parent %proc.pname on %container.name under user %user.name and execution path %proc.exepath (proc.name=%proc.name proc.pname=%proc.pname fd.name=%fd.name proc.exepath=%proc.exepath proc.pexepath=%proc.pexepath gexepath=%proc.aexepath[2] ggexepath=%proc.aexepath[3] gggexepath=%proc.aexepath[4] proc.cmdline=%proc.cmdline proc.pcmdline=%proc.pcmdline gcmdline=%proc.acmdline[2] ggcmdline=%proc.acmdline[3] gggcmdline=%proc.acmdline[4] gparent=%proc.aname[2] ggparent=%proc.aname[3] gggparent=%proc.aname[4] evt.type=%evt.type proc.args=%proc.args proc.pid=%proc.pid proc.cwd=%proc.cwd proc.ppid=%proc.ppid user.uid=%user.uid user.loginuid=%user.loginuid user.name=%user.name container.id=%container.id container.name=%container.name image=%container.image.repository:%container.image.tag)
       priority: WARNING
       tags: [container, MITRE, MITRE_TA0002_execution]
+    
+    - rule: Program Execution in Container
+      desc: Alert if 'cat' is executed in a container.
+      condition: evt.type = execve and container.id != host and proc.name = cat
+      output: Cat command run inside container by %user.name (container=%container.id)
+      priority: NOTICE
